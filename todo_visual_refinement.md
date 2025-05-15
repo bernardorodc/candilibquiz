@@ -1,0 +1,9 @@
+- [X] 001 Analisar os detalhes dos refinamentos visuais solicitados.
+- [X] 002 Planejar a nova paleta de cores e a tipografia refinada.
+- [X] 003 Definir as microinterações e os efeitos visuais para botões e transições.
+- [X] 004 Criar ou obter os ornamentos decorativos e elementos gráficos sutis (flores, pétalas, folhas, corações).
+- [X] 005 Ajustar o layout responsivo com padding adequado (mín. 16px mobile) e tipografia fluida.
+- [X] 006 Implementar o "efeito presente" na tela de resultado de 20% + bônus (fundo suave, textura leve, emoji/selo 🎀 ou 🎁, destaque no bloco de texto).
+- [X] 007 Aplicar todos os refinamentos de UI/UX (paleta, tipografia, espaçamentos, cantos arredondados, sombras suaves) e testar as novas microinterações (hover em botões, clique em respostas, transições entre perguntas, animação de resultado final) no projeto existente.
+- [X] 008 Validar a experiência visual e a responsividade em dispositivos móveis e desktop.
+- [X] 009 Atualizar o link de checkout nos CTAs finais.

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Descubra sua fase e ganhe um presente!</title>
+    <meta name="description" content="Responda nosso quiz rápido e descubra como cuidar da sua saúde íntima. Ganhe descontos exclusivos!">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FEEAE6; /* Rosa claro */
+            color: #3A2E4F; /* Textos */
+            padding: 1rem; /* Padding geral para mobile, Tailwind p-4 */
+        }
+        .font-lora {
+             font-family: 'Lora', serif;
+        }
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Nova Paleta e Estilos */
+        .candilib-bg-rosa-claro { background-color: #FEEAE6; }
+        .candilib-bg-lilas-suave { background-color: #EBDCFB; }
+        .candilib-bg-branco { background-color: #FFFFFF; }
+        .candilib-texto-principal { color: #3A2E4F; }
+        .candilib-botao-acao {
+            background-color: #F76C6C; /* Rosa vibrante */
+            color: #FFFFFF;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .candilib-botao-acao:hover {
+            background-color: #E05A5A; /* Hover mais escuro */
+            transform: translateY(-2px);
+        }
+
+        .candilib-card {
+            background-color: #FFFFFF;
+            border-radius: 1rem; /* Cantos arredondados generosos */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Sombra suave */
+            padding: 1.5rem; /* Espaçamento interno generoso */
+            margin-top: 2rem; /* Adicionado para compensar remoção do header */
+            margin-bottom: 2rem; /* Adicionado para espaçamento inferior */
+        }
+        @media (min-width: 768px) {
+            .candilib-card {
+                padding: 2.5rem;
+            }
+        }
+
+        .candilib-progress-bar-bg { background-color: #EBDCFB; } /* Lilás suave para fundo da barra */
+        .candilib-progress-bar-fill { background-color: #F76C6C; transition: width 0.5s ease-out; } /* Rosa vibrante para preenchimento */
+
+        /* Transições de Quiz Card (mantidas e ajustadas se necessário) */
+        .quiz-card, #intro-screen {
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        }
+        .hidden-screen {
+            transform: translateY(20px);
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            pointer-events: none;
+        }
+        .quiz-card.hidden-left {
+            transform: translateX(-100%);
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            pointer-events: none;
+        }
+         .quiz-card.hidden-right {
+            transform: translateX(100%);
+            opacity: 0;
+             position: absolute;
+             width: 100%;
+             pointer-events: none;
+        }
+        #quiz-area {
+             min-height: 380px; /* Ajustado para mais espaço vertical */
+             margin-bottom: 1.5rem; /* Espaçamento generoso */
+        }
+
+        /* Botão de Opção */
+        .option-button {
+            border: 1px solid #EBDCFB; /* Borda lilás suave */
+            border-radius: 0.75rem; /* Cantos arredondados */
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            cursor: pointer; /* Adicionado para indicar clicabilidade */
+        }
+        .option-button:hover {
+            border-color: #F76C6C;
+            background-color: #FEEAE6; /* Rosa claro no hover */
+            transform: translateY(-1px);
+        }
+        .option-button.selected {
+            background-color: #EBDCFB; /* Lilás suave quando selecionado */
+            border-color: #3A2E4F; /* Texto principal para borda destacada */
+            color: #3A2E4F;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(58, 46, 79, 0.2); /* Sombra mais forte */
+        }
+        .option-button.selected::after {
+            content: '✔'; /* Check delicado */
+            color: #F76C6C; /* Rosa vibrante */
+            font-weight: bold;
+            margin-left: 8px;
+            animation: fadeInCheck 0.3s ease-in-out;
+        }
+        @keyframes fadeInCheck {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Feedback de Pontos */
+        .points-feedback {
+            font-size: 0.875rem;
+            color: #F76C6C; /* Rosa vibrante */
+            text-align: right;
+            margin-top: 0.25rem;
+            height: 1.5rem; 
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: translateY(5px);
+        }
+        .points-feedback.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Animação Tela de Resultado */
+        #result-container {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        #result-container.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Efeito Presente */
+        .efeito-presente {
+            background-color: #FEEAE6; /* Rosa claro */
+            border: 2px dashed #F76C6C; /* Borda rosa vibrante tracejada */
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 15px rgba(247, 108, 108, 0.2);
+        }
+        .efeito-presente .result-icon {
+            font-size: 2.5rem; /* Maior para destaque */
+            margin-bottom: 0.5rem;
+        }
+
+        /* Elementos Decorativos */
+        .flor-decorativa-canto {
+            position: absolute;
+            width: 60px;
+            height: auto;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .flor-canto-superior-esquerdo {
+            top: -20px;
+            left: -20px;
+            transform: rotate(-30deg);
+        }
+        .flor-canto-inferior-direito {
+            bottom: -20px;
+            right: -20px;
+            transform: rotate(150deg);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 antialiased candilib-bg-rosa-claro candilib-texto-principal">
+
+    <div class="candilib-card w-full max-w-2xl mx-auto relative">
+        <img src="./assets/flor_decorativa.png" alt="" class="flor-decorativa-canto flor-canto-superior-esquerdo" />
+        <img src="./assets/flor_decorativa.png" alt="" class="flor-decorativa-canto flor-canto-inferior-direito" />
+
+        <!-- Header removido -->
+
+        <!-- Tela Inicial do Quiz -->
+        <section id="intro-screen" class="text-center py-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-center font-playfair mb-4">Descubra qual fase o seu corpo está vivendo</h1>
+            <p class="text-center text-base md:text-lg mb-8">Este é um quiz rápido e confidencial. Ao responder 5 perguntas simples, você descobre como está a sua saúde íntima e ainda recebe um desconto especial para começar seu tratamento.<br>Quanto mais perguntas você responder, maior pode ser o seu desconto!</p>
+            <button id="start-quiz-button" class="candilib-botao-acao font-semibold py-3.5 px-12 rounded-full text-lg md:text-xl">Começar o Quiz</button>
+        </section>
+
+        <main id="quiz-container" class="hidden">
+            <!-- Título e parágrafo do quiz principal podem ser ajustados ou removidos se a tela inicial já os cobre -->
+            <h1 class="text-2xl md:text-3xl font-bold text-center font-playfair mb-3 pt-6">Qual fase do seu corpo você está vivendo?</h1>
+            <p class="text-center text-base md:text-lg mb-8 md:mb-10">Descubra como cuidar da sua saúde íntima e ganhar um presente especial!</p>
+
+            <div class="w-full candilib-progress-bar-bg rounded-full h-3 mb-8 md:mb-12">
+                <div id="progress-bar" class="candilib-progress-bar-fill h-3 rounded-full" style="width: 0%"></div>
+            </div>
+
+            <div id="quiz-area" class="relative overflow-hidden">
+                <!-- Template do Card da Pergunta (será clonado via JS) -->
+                <div id="question-card-template" class="quiz-card absolute top-0 left-0 w-full opacity-0 pointer-events-none">
+                     <h2 class="text-xl md:text-2xl font-semibold mb-6 text-center font-lora" id="question-text">Pergunta Placeholder?</h2>
+                     <div id="options-container" class="space-y-4 md:space-y-5">
+                         <!-- Opções serão inseridas aqui pelo JS -->
+                     </div>
+                </div>
+            </div>
+        </main>
+
+        <section id="result-container" class="hidden text-center py-6">
+            <div id="result-icon-area" class="text-4xl mb-4"></div> 
+            <h2 id="result-title" class="text-2xl md:text-3xl font-bold font-playfair mb-4"></h2>
+            <p id="result-message" class="text-base md:text-lg mb-6"></p>
+            <div id="discount-area" class="mb-6 text-lg font-medium">
+            </div>
+            <div id="payment-on-delivery-message-area" class="mb-6 text-sm">
+                <!-- Mensagem de pagamento na entrega será inserida aqui -->
+            </div>
+            <div id="timer-area" class="mb-8 hidden">
+                <p class="text-[#F76C6C] font-semibold">Seu desconto está reservado por <span id="countdown-timer" class="font-bold">15:00</span> minutos!</p>
+            </div>
+            <div id="cta-button-area" class="hidden">
+                 <button id="cta-button" class="candilib-botao-acao font-semibold py-3.5 px-12 rounded-full text-lg md:text-xl">CTA Placeholder</button>
+            </div>
+             <div id="capture-form-area" class="hidden mt-6 max-w-md mx-auto">
+                 <p class="mb-4 text-base">Informe seus dados para receber o desconto e o presente:</p>
+                 <input type="text" id="capture-name" placeholder="Seu nome completo" class="w-full border border-candilib-lilas-suave rounded-lg p-3 mb-3 focus:outline-none focus:ring-2 focus:ring-[#F76C6C] focus:border-transparent text-sm">
+                 <input type="email" id="capture-email" placeholder="Seu melhor e-mail" class="w-full border border-candilib-lilas-suave rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-[#F76C6C] focus:border-transparent text-sm">
+                 <button id="submit-capture-button" class="candilib-botao-acao font-semibold py-3 px-8 rounded-full w-full text-base">Resgatar meu presente</button>
+             </div>
+        </section>
+
+        <footer class="text-center text-sm mt-12 opacity-70">
+            © 2025 Todos os direitos reservados.
+        </footer>
+
+    </div>
+
+    <script src="./js/script.js"></script>
+</body>
+</html>
+
